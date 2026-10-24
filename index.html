@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Формула-1 2026</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <button id="language-toggle" class="language-toggle" type="button" onclick="toggleLanguage()" aria-label="Switch to English" title="Switch language">EN</button>
+    <h1>Формула-1 <span class="season-year">2026</span></h1>
+    
+    <!-- Кнопки-переключатели -->
+    <div class="header-tabs">
+      <button id="tab-schedule" class="tab-btn active" onclick="switchTab('schedule')">Календарь</button>
+      <button id="tab-standings" class="tab-btn" onclick="switchTab('standings')">Пилоты</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="tab-viewport">
+    <div class="tab-track" id="tab-track" data-tab="schedule">
+    <!-- ВКЛАДКА 1: КАЛЕНДАРЬ -->
+    <div id="view-schedule" class="tab-panel">
+      <!-- Карточка следующей гонки -->
+      <section id="next-race" class="next-race">
+        <p class="loading">Загрузка...</p>
+      </section>
+
+      <!-- Сетка с плитками -->
+      <section class="schedule">
+        <h2>Календарь</h2>
+        <div class="calendar-toolbar">
+          <label for="calendar-sort">Сортировка</label>
+          <div class="custom-select" id="calendar-sort-wrap">
+            <select id="calendar-sort" class="native-sort-select" aria-hidden="true" tabindex="-1">
+              <option value="default">По календарю</option>
+              <option value="bottom-up">Снизу вверх</option>
+              <option value="length-asc">Длина трассы: от короткой</option>
+              <option value="length-desc">Длина трассы: от длинной</option>
+              <option value="newest">По новизне: сначала новые</option>
+              <option value="oldest">По годам: сначала старые</option>
+            </select>
+            <button type="button" class="custom-select-trigger" id="calendar-sort-trigger" aria-haspopup="listbox" aria-expanded="false" onclick="toggleCalendarSort()">По календарю <span class="select-chevron" aria-hidden="true"></span></button>
+            <div class="custom-select-menu" id="calendar-sort-menu" role="listbox" aria-label="Сортировка календаря" hidden>
+              <button type="button" role="option" data-value="default" aria-selected="true" onclick="chooseCalendarSort('default', 'По календарю')">По календарю</button>
+              <button type="button" role="option" data-value="bottom-up" aria-selected="false" onclick="chooseCalendarSort('bottom-up', 'Снизу вверх')">Снизу вверх</button>
+              <button type="button" role="option" data-value="length-asc" aria-selected="false" onclick="chooseCalendarSort('length-asc', 'Длина трассы: от короткой')">Длина трассы: от короткой</button>
+              <button type="button" role="option" data-value="length-desc" aria-selected="false" onclick="chooseCalendarSort('length-desc', 'Длина трассы: от длинной')">Длина трассы: от длинной</button>
+              <button type="button" role="option" data-value="newest" aria-selected="false" onclick="chooseCalendarSort('newest', 'По новизне: сначала новые')">По новизне: сначала новые</button>
+              <button type="button" role="option" data-value="oldest" aria-selected="false" onclick="chooseCalendarSort('oldest', 'По годам: сначала старые')">По годам: сначала старые</button>
+            </div>
+          </div>
+        </div>
+        <div id="race-grid" class="race-grid"></div>
+      </section>
+    </div>
+
+    <!-- ВКЛАДКА 2: ПИЛОТЫ -->
+    <div id="view-standings" class="tab-panel" hidden>
+      <section class="schedule standings-section">
+        <h2 style="margin-bottom: 16px;">Личный зачёт</h2>
+        <div class="standings-layout">
+          <aside class="driver-visual driver-portrait-panel" id="driver-portrait-panel" aria-label="Портрет выбранного пилота">
+            <img id="driver-portrait" alt="Портрет выбранного пилота в шлеме" />
+            <div class="driver-visual-caption" id="driver-portrait-caption">Выбери пилота</div>
+          </aside>
+          <div id="standings-list" class="standings-list">
+            <p class="loading">Загрузка данных...</p>
+          </div>
+          <aside id="driver-results-display" class="driver-results-display" aria-live="polite">
+            <p class="results-empty">Выбери пилота, чтобы посмотреть результаты его гонок.</p>
+          </aside>
+        </div>
+      </section>
+    </div>
+    </div><!-- /.tab-track -->
+    </div><!-- /.tab-viewport -->
+  </main>
+
+  <!-- Модальное окно (скрыто по умолчанию, открывается при клике на плитку) -->
+  <div id="modal" class="modal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="close-btn" type="button" onclick="event.stopPropagation(); closeModal(event)">✕</button>
+      <button type="button" id="modal-prev" class="edge-nav edge-nav-prev" onclick="navigateModal(-1)" aria-label="Предыдущая трасса" hidden>
+        <span class="edge-nav-arrow" aria-hidden="true">‹</span>
+      </button>
+      <button type="button" id="modal-next" class="edge-nav edge-nav-next" onclick="navigateModal(1)" aria-label="Следующая трасса" hidden>
+        <span class="edge-nav-arrow" aria-hidden="true">›</span>
+      </button>
+      <div class="modal-stage">
+        <div class="modal-track" id="modal-track">
+          <div id="modal-body" class="modal-panel modal-base-panel"></div>
+          <div id="modal-slide-panel" class="modal-panel modal-slide-panel" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Кнопка «Наверх» -->
+  <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" type="button" aria-label="Наверх">↑</button>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
